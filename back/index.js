@@ -74,10 +74,10 @@ const checkUserSession = (req, res) => {
   }
 };
 
-app.get("/login", checkUserSession);
-app.get("/", checkUserSession);
+app.get("/login", cors(corsOptions), checkUserSession);
+app.get("/", cors(corsOptions), checkUserSession);
 
-app.post("/login", async (req, res) => {
+app.post("/login", cors(corsOptions), async (req, res) => {
   const { userId, userPw } = req.body;
   console.log(`id: ${userId}`);
   console.log(`pw: ${userPw}`);
@@ -102,7 +102,7 @@ app.post("/login", async (req, res) => {
 });
 
 // logout
-app.get("/logout", (req, res) => {
+app.get("/logout", cors(corsOptions), (req, res) => {
   console.log("로그아웃");
   // 현재 도메인의 세션 삭제
   req.session.destroy();
@@ -116,7 +116,7 @@ app.get("/logout", (req, res) => {
 //   res.render("signup");
 // });
 
-app.post("/signup", async (req, res) => {
+app.post("/signup", cors(corsOptions), async (req, res) => {
   console.log(req.body.userId);
   console.log(req.body.userPw);
   console.log(req.body.userGroup);
