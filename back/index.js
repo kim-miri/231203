@@ -13,7 +13,8 @@ const corsOptions = {
   origin: "https://web-front1-57lz2alpp6dqxp.sel4.cloudtype.app", // 허용할 출처
   optionsSuccessStatus: 200, // 프리플라이트 요청에 대한 응답 상태 코드
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors());
 
 //Express.js 4.x 버전에서는 body-parser 미들웨어를 사용하여 요청 본문을 파싱하였으나 Express.js 4.18.2 버전에서는 body-parser 미들웨어를 사용하지 않고도 요청 본문을 파싱할 수 있음
 //  express.json()과 express.urlencoded() 메소드를 사용하여 JSON 및 URL-encoded 데이터를 파싱
@@ -74,10 +75,10 @@ const checkUserSession = (req, res) => {
   }
 };
 
-app.get("/login", cors(corsOptions), checkUserSession);
-app.get("/", cors(corsOptions), checkUserSession);
+app.get("/login", checkUserSession);
+app.get("/", checkUserSession);
 
-app.post("/login", cors(corsOptions), async (req, res) => {
+app.post("/login", async (req, res) => {
   const { userId, userPw } = req.body;
   console.log(`id: ${userId}`);
   console.log(`pw: ${userPw}`);
@@ -102,7 +103,7 @@ app.post("/login", cors(corsOptions), async (req, res) => {
 });
 
 // logout
-app.get("/logout", cors(corsOptions), (req, res) => {
+app.get("/logout", (req, res) => {
   console.log("로그아웃");
   // 현재 도메인의 세션 삭제
   req.session.destroy();
@@ -116,7 +117,7 @@ app.get("/logout", cors(corsOptions), (req, res) => {
 //   res.render("signup");
 // });
 
-app.post("/signup", cors(corsOptions), async (req, res) => {
+app.post("/signup", async (req, res) => {
   console.log(req.body.userId);
   console.log(req.body.userPw);
   console.log(req.body.userGroup);
