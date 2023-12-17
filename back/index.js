@@ -10,7 +10,7 @@ const session = require("express-session");
 // CORS 설정 모든 도메인에서의 요청을 허용
 // CORS 설정
 const corsOptions = {
-  origin: "http://localhost:3000", // 허용할 출처
+  origin: "https://web-front1-57lz2alpp6dqxp.sel4.cloudtype.app", // 허용할 출처
   optionsSuccessStatus: 200, // 프리플라이트 요청에 대한 응답 상태 코드
 };
 app.use(cors(corsOptions));
