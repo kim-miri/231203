@@ -8,29 +8,16 @@ const sha = require("sha256");
 const session = require("express-session");
 const path = require("path");
 
-// CORS 설정 모든 도메인에서의 요청을 허용
-// CORS 설정
-const corsOptions = {
-  origin: "https://web-front1-57lz2alpp6dqxp.sel4.cloudtype.app", // 허용할 출처
-  optionsSuccessStatus: 200, // 프리플라이트 요청에 대한 응답 상태 코드
-  methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-};
-// app.use(cors(corsOptions));
-app.use(cors());
+// app.use(cors());
 
 app.use(express.static(path.join(__dirname, "/build")));
 
-//Express.js 4.x 버전에서는 body-parser 미들웨어를 사용하여 요청 본문을 파싱하였으나 Express.js 4.18.2 버전에서는 body-parser 미들웨어를 사용하지 않고도 요청 본문을 파싱할 수 있음
-//  express.json()과 express.urlencoded() 메소드를 사용하여 JSON 및 URL-encoded 데이터를 파싱
 app.use(express.json());
 // 세션 설정. 앞으로 옮겨 놓는게 좋음
 app.use(
   session({
-    // 세션 아이디 암호화를 위한 재료 값
     secret: "dfgcsdga234254fsdcs0sdfs12",
-    // 세션을 접속할 때마다 새로운 세션 식별자(sid)의 발급 여부를 결정. 일반적으로 false로 설정
     resave: false,
-    // 세션을 사용하기 전까지 세션 식별자를 발급하지 않도록 함. 일반적으로 true 설정
     saveUninitialized: true,
   })
 );
@@ -43,12 +30,11 @@ const URL =
 let mydb;
 mongoose
   .connect(URL, {
-    dbName: "coffee", // 실제로 데이터 저장할 db명. 안쓰면 새로운 DB에 저장
+    dbName: "coffee",
   })
   .then(() => {
     console.log("MongoDB에 연결되었습니다.");
-    // mongoose.connection.db를 통해 데이터베이스 참조
-    mydb = mongoose.connection.db; // 기본값(test를 만듦)
+    mydb = mongoose.connection.db;
   })
   .catch((err) => {
     console.error("MongoDB 연결 실패:", err);
@@ -59,22 +45,19 @@ const postSchema = new mongoose.Schema({
   id: String,
   title: String,
   content: String,
-  wdate: { type: Date, default: Date.now }, // wdate를 Date 타입으로 변경. 작성 날짜를 기준으로 정렬하기 위해
+  wdate: { type: Date, default: Date.now },
   writer: String,
 });
 
-// Post 모델 정의
 const Post = mongoose.model("Post", postSchema);
-
-// 모델 생성. 이 모델은 MongoDB에서 "videos" 컬렉션과 매핑
-// 첫 번째 매개변수로 모델 이름을, 두 번째 매개변수로 스키마를, 세 번째 매개변수로 컬렉션 이름
 
 // login
 const checkUserSession = (req, res) => {
   if (req.session.user) {
     console.log("세션 유지");
     // res.json({ user: req.session.user });
-    res.sendFile(path.join(__dirname, "/build/index.html"));
+    // res.sendFile(path.join(__dirname, "/build/index.html"));
+    res.json({ user: req.session.user });
   } else {
     res.json({ user: null });
   }
@@ -117,11 +100,6 @@ app.get("/logout", (req, res) => {
   res.json({ user: null });
 });
 
-// 회원가입
-// app.get("/signup", (req, res) => {
-//   res.render("signup");
-// });
-
 app.post("/signup", async (req, res) => {
   console.log(req.body.userId);
   console.log(req.body.userPw);
@@ -132,8 +110,6 @@ app.post("/signup", async (req, res) => {
     const collection = mydb.collection("account");
     await collection.insertOne({
       userId: req.body.userId,
-      // userPw: req.body.userPw,
-      // 암호화된 해시값으로 저장됨
       userPw: sha(req.body.userPw),
       userGroup: req.body.userGroup,
       userEmail: req.body.userEmail,
