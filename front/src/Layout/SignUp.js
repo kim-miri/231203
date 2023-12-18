@@ -44,7 +44,7 @@ const SignUp = () => {
 
   return (
     <Container className="mt-3">
-      <Form onSubmit={handleSubmit} method="get">
+      <Form onSubmit={handleSubmit} method="post">
         <Form.Group className="mb-3">
           <Form.Label>아이디</Form.Label>
           <Form.Control
