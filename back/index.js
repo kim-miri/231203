@@ -6,15 +6,19 @@ const cors = require("cors");
 const { ObjectId } = mongoose.Types;
 const sha = require("sha256");
 const session = require("express-session");
+const path = require("path");
 
 // CORS 설정 모든 도메인에서의 요청을 허용
 // CORS 설정
 const corsOptions = {
   origin: "https://web-front1-57lz2alpp6dqxp.sel4.cloudtype.app", // 허용할 출처
   optionsSuccessStatus: 200, // 프리플라이트 요청에 대한 응답 상태 코드
+  methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
 };
 // app.use(cors(corsOptions));
 app.use(cors());
+
+app.use(express.static(path.join(__dirname, "/build")));
 
 //Express.js 4.x 버전에서는 body-parser 미들웨어를 사용하여 요청 본문을 파싱하였으나 Express.js 4.18.2 버전에서는 body-parser 미들웨어를 사용하지 않고도 요청 본문을 파싱할 수 있음
 //  express.json()과 express.urlencoded() 메소드를 사용하여 JSON 및 URL-encoded 데이터를 파싱
@@ -69,7 +73,8 @@ const Post = mongoose.model("Post", postSchema);
 const checkUserSession = (req, res) => {
   if (req.session.user) {
     console.log("세션 유지");
-    res.json({ user: req.session.user });
+    // res.json({ user: req.session.user });
+    res.sendFile(path.join(__dirname, "/build/index.html"));
   } else {
     res.json({ user: null });
   }
